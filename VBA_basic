@@ -1,0 +1,103 @@
+1, Tự tạo 1 hàm mới theo ý muốn
+-- Hàm nối chuỗi
+Function noi_chuoi(Pham_vi As Range, ky_tu_xau_chuoi As String)
+    Dim noi_ky_tu As Range
+    For Each noi_ky_tu In Pham_vi
+        noi_chuoi = noi_chuoi & noi_ky_tu & ky_tu_xau_chuoi
+    Next
+    noi_chuoi = Left(noi_chuoi, Len(noi_chuoi) - Len(ky_tu_xau_chuoi)) (Lưu ý: ky_tu_xau_chuoi lúc này là ông cuối cùng trong vòng lặp for each, tức là ông dấu cách cuối cùng chứ không phải toàn bộ dấu cách đã được nối)
+End Function
+
+--Hàm tính tổng các số trong 1 chuỗi
+Function tinh_tong_so(chuoi As String)
+    tinh_tong_so = 0
+    Dim i As Integer
+    Dim phu As String
+    For i = 1 To Len(chuoi)
+        phu = Mid(chuoi, i, 1)
+        If phu >= "0" And phu <= "9" Then
+          tinh_tong_so = tinh_tong_so + phu
+        End If
+    Next
+End Function
+
+
+2, Tạo advanced filter
+Sub loc_nang_cao()
+Dim rg As Range
+Dim criteria As Range
+Dim copy_to As Range
+
+Sheets(1).Range("N:T").Delete
+Set rg = Sheets(1).Range("B4").CurrentRegion
+Set criteria = Sheets(1).Range("J5").CurrentRegion
+Set copy_to = Sheets(1).Range("N4")
+
+rg.AdvancedFilter xlFilterCopy, criteria, copy_to
+
+End Sub
+
+
+3, Copy nhiều file vào 1 file
+sub copyfile()
+Path = " " (Thư mục chứa các file cần copy)
+Filename = Dir (Path & "*.xls*")
+Do While Filename <> ""
+  Workbooks.Open Filename:= Path & Filename, ReadOnly:=True
+      For each sheet in ActiveWorkbooks.Sheets
+        Sheet.Copy after := ThisWorkbook.Sheets(1)
+      Next
+  Workbooks(Filename).Close
+  Filename = Dir()
+Loop
+End Sub
+!!!!Lưu ý: Lưu file mới vừa được tổng hợp dữ liệu ở dạng Excel Macro-Enabled Workbook
+
+--Xóa inactive sheet
+Sub xoa_unactive_sheet()
+Dim ws As Worksheet
+Application.Alerts = False
+For Each ws In ThisWorkbook.Sheets
+    If ws.Name <> ThisWorkbook.ActiveSheet.Name Then
+        ws.Delete
+    End If
+Next
+Application.Alerts = True
+End Sub
+
+--Copy cac file trong thư mục nguồn vào thư mục đích
+Sub copy_file()
+Dim FSO As Object
+Dim thu_muc_goc As String
+Dim thu_muc_dich As String
+Dim kieu_file As String
+
+thu_muc_goc = ThisWorkbook.Sheets(1).Cells(3, 3)
+thu_muc_dich = ThisWorkbook.Sheets(1).Cells(6, 3)
+kieu_file = ThisWorkbook.Sheets(1).Cells(8, 3)
+
+Set FSO = CreateObject("scripting.FileSystemObject")
+If FSO.FolderExists(thu_muc_dich) = False Then
+MsgBox ("Folder does not exist")
+End If
+
+If FSO.FolderExists(thu_muc_goc) = False Then
+MsgBox ("Folder does not exist")
+End If
+
+FSO.copyFile Source:=thu_muc_nguon & kieu_file, Destination:=thu_muc_dich
+MsgBox ("Successfully copied")
+End Sub
+
+-- In bang cuu chuong
+Sub bang_cuu_chuong()
+
+Dim i, j As Integer
+For i = 1 To 9 Step 1
+    For j = 1 To 9 Step 1
+        ThisWorkbook.Sheets(1).Cells(i, j) = i & " x " & j & ":=" & i * j
+    Next
+Next
+End Sub
+
+
